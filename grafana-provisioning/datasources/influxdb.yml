@@ -1,0 +1,16 @@
+apiVersion: 1
+
+datasources:
+  - name: InfluxDB_Apex
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    jsonData:
+      version: Flux
+      organization: reef
+      defaultBucket: apex
+      tlsSkipVerify: true
+    secureJsonData:
+      token: my-super-secret-auth-token
+    isDefault: true
+    editable: true
