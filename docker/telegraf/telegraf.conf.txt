@@ -1,20 +1,3 @@
-#!/bin/bash
-# Fix script for Telegraf mount issue
-
-set -e
-
-echo "🔧 Fixing Telegraf configuration..."
-
-# Stop all containers
-echo "Stopping containers..."
-docker-compose down
-
-# Create telegraf directory if it doesn't exist
-mkdir -p telegraf
-
-# Create telegraf.conf in the telegraf directory
-echo "Creating telegraf.conf..."
-cat > telegraf/telegraf.conf <<'EOF'
 [agent]
   interval = "60s"
   round_interval = true
@@ -27,11 +10,12 @@ cat > telegraf/telegraf.conf <<'EOF'
   hostname = "apex-telegraf"
   omit_hostname = false
 
-[[outputs.influxdb_v2]]
+[[outputs.infcd C:\Users\austi\Documents\GitHub\apexluxdb_v2]]
   urls = ["http://influxdb:8086"]
   token = "${INFLUX_TOKEN}"
   organization = "reef"
   bucket = "apex"
+powershell
 
 [[inputs.http]]
   urls = ["http://192.168.1.59/cgi-bin/datalog.json"]
@@ -68,35 +52,3 @@ cat > telegraf/telegraf.conf <<'EOF'
     [[inputs.http.json_v2.tag]]
       path = "ilog.type"
       rename = "controller_type"
-EOF
-
-# Verify the file was created
-if [ -f "telegraf/telegraf.conf" ]; then
-    echo "✅ telegraf.conf created successfully"
-    echo "📍 File location: $(pwd)/telegraf/telegraf.conf"
-else
-    echo "❌ Failed to create telegraf.conf"
-    exit 1
-fi
-
-# Start the stack again
-echo ""
-echo "Starting containers..."
-docker-compose up -d
-
-echo ""
-echo "⏳ Waiting for containers to start..."
-sleep 5
-
-echo ""
-echo "📊 Container Status:"
-docker-compose ps
-
-echo ""
-echo "✅ Fix applied! Checking Telegraf logs..."
-echo ""
-docker-compose logs --tail=20 telegraf
-
-echo ""
-echo "To monitor logs in real-time, run:"
-echo "  docker-compose logs -f telegraf"

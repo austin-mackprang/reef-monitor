@@ -58,4 +58,3 @@ volumes:
 
 networks:
   apex-network:
-    driver: bridge
