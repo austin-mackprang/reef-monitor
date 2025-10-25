@@ -1,7 +1,10 @@
+# Reef Monitor - Neptune Apex TIG Stack
+name: reef-monitor
+
 services:
   influxdb:
     image: influxdb:2.7
-    container_name: apex-influxdb
+    container_name: reef-monitor-influxdb
     restart: unless-stopped
     ports:
       - "8086:8086"
@@ -16,13 +19,14 @@ services:
       - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET}
       - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_TOKEN}
     networks:
-      - apex-network
+      - reef-network
 
   telegraf:
     build:
       context: ./telegraf
       dockerfile: Dockerfile
-    container_name: apex-telegraf
+    image: reef-monitor-telegraf:latest
+    container_name: reef-monitor-telegraf
     restart: unless-stopped
     volumes:
       - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
@@ -30,7 +34,7 @@ services:
     depends_on:
       - influxdb
     networks:
-      - apex-network
+      - reef-network
     environment:
       - APEX_ENDPOINT=${APEX_ENDPOINT}
       - COLLECTION_INTERVAL=${COLLECTION_INTERVAL}
@@ -40,7 +44,7 @@ services:
 
   grafana:
     image: grafana/grafana:10.2.0
-    container_name: apex-grafana
+    container_name: reef-monitor-grafana
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -51,7 +55,7 @@ services:
     depends_on:
       - influxdb
     networks:
-      - apex-network
+      - reef-network
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
@@ -63,4 +67,4 @@ volumes:
   grafana-data:
 
 networks:
-  apex-network:
+  reef-network:

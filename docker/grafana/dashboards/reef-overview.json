@@ -6,7 +6,7 @@
         "datasource": "-- Grafana --",
         "enable": true,
         "hide": true,
-        "iconColor": "rgba(0, 211, 255, 1)",
+        "iconColor": "#80ffdb",
         "name": "Annotations & Alerts",
         "type": "dashboard"
       }
@@ -24,7 +24,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "fixedColor": "#5390d9",
+            "mode": "fixed"
           },
           "custom": {
             "axisCenteredZero": false,
@@ -33,14 +34,14 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
             "hideFrom": {
               "tooltip": false,
               "viz": false,
               "legend": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
@@ -56,12 +57,13 @@
               "mode": "off"
             }
           },
+          "displayName": "Temperature",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "#5390d9",
                 "value": null
               }
             ]
@@ -92,7 +94,7 @@
       "targets": [
         {
           "datasource": "InfluxDB_Apex",
-          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"Temp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"Temperature\")",
+          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"Temp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> keep(columns: [\"_time\", \"_value\"])",
           "refId": "A"
         }
       ],
@@ -104,7 +106,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "fixedColor": "#6930c3",
+            "mode": "fixed"
           },
           "custom": {
             "axisCenteredZero": false,
@@ -113,14 +116,14 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
             "hideFrom": {
               "tooltip": false,
               "viz": false,
               "legend": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
@@ -136,6 +139,7 @@
               "mode": "off"
             }
           },
+          "displayName": "pH",
           "mappings": [],
           "max": 9,
           "min": 7,
@@ -143,7 +147,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "#6930c3",
                 "value": null
               }
             ]
@@ -174,7 +178,7 @@
       "targets": [
         {
           "datasource": "InfluxDB_Apex",
-          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"pH\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"pH\")",
+          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"pH\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> keep(columns: [\"_time\", \"_value\"])",
           "refId": "A"
         }
       ],
@@ -186,7 +190,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "fixedColor": "#48bfe3",
+            "mode": "fixed"
           },
           "custom": {
             "axisCenteredZero": false,
@@ -195,14 +200,14 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
             "hideFrom": {
               "tooltip": false,
               "viz": false,
               "legend": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
@@ -218,12 +223,13 @@
               "mode": "off"
             }
           },
+          "displayName": "ORP",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "#48bfe3",
                 "value": null
               }
             ]
@@ -254,7 +260,7 @@
       "targets": [
         {
           "datasource": "InfluxDB_Apex",
-          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"ORP\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"ORP\")",
+          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"ORP\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> keep(columns: [\"_time\", \"_value\"])",
           "refId": "A"
         }
       ],
@@ -266,7 +272,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "fixedColor": "#56cfe1",
+            "mode": "fixed"
           },
           "custom": {
             "axisCenteredZero": false,
@@ -275,14 +282,14 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
             "hideFrom": {
               "tooltip": false,
               "viz": false,
               "legend": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
@@ -298,12 +305,13 @@
               "mode": "off"
             }
           },
+          "displayName": "Salinity",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "#56cfe1",
                 "value": null
               }
             ]
@@ -334,7 +342,7 @@
       "targets": [
         {
           "datasource": "InfluxDB_Apex",
-          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"Cond\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"Salinity\")",
+          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"Cond\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> keep(columns: [\"_time\", \"_value\"])",
           "refId": "A"
         }
       ],
@@ -346,7 +354,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "fixedColor": "#7400b8",
+            "mode": "fixed"
           },
           "custom": {
             "axisCenteredZero": false,
@@ -355,14 +364,14 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
             "hideFrom": {
               "tooltip": false,
               "viz": false,
               "legend": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
@@ -378,12 +387,13 @@
               "mode": "off"
             }
           },
+          "displayName": "Alkalinity",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "#7400b8",
                 "value": null
               }
             ]
@@ -414,7 +424,7 @@
       "targets": [
         {
           "datasource": "InfluxDB_Apex",
-          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"alk\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"Alkalinity\")",
+          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"alk\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> keep(columns: [\"_time\", \"_value\"])",
           "refId": "A"
         }
       ],
@@ -426,7 +436,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "fixedColor": "#5e60ce",
+            "mode": "fixed"
           },
           "custom": {
             "axisCenteredZero": false,
@@ -435,14 +446,14 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
             "hideFrom": {
               "tooltip": false,
               "viz": false,
               "legend": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
@@ -458,12 +469,13 @@
               "mode": "off"
             }
           },
+          "displayName": "Calcium",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "#5e60ce",
                 "value": null
               }
             ]
@@ -494,7 +506,7 @@
       "targets": [
         {
           "datasource": "InfluxDB_Apex",
-          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"ca\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"Calcium\")",
+          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"ca\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> keep(columns: [\"_time\", \"_value\"])",
           "refId": "A"
         }
       ],
@@ -506,7 +518,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "fixedColor": "#64dfdf",
+            "mode": "fixed"
           },
           "custom": {
             "axisCenteredZero": false,
@@ -515,14 +528,14 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
             "hideFrom": {
               "tooltip": false,
               "viz": false,
               "legend": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
@@ -538,12 +551,13 @@
               "mode": "off"
             }
           },
+          "displayName": "Magnesium",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "#64dfdf",
                 "value": null
               }
             ]
@@ -574,7 +588,7 @@
       "targets": [
         {
           "datasource": "InfluxDB_Apex",
-          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"mg\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"Magnesium\")",
+          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"mg\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> keep(columns: [\"_time\", \"_value\"])",
           "refId": "A"
         }
       ],
@@ -595,14 +609,14 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
+            "fillOpacity": 20,
+            "gradientMode": "hue",
             "hideFrom": {
               "tooltip": false,
               "viz": false,
               "legend": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
@@ -623,7 +637,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "#80ffdb",
                 "value": null
               }
             ]
@@ -654,7 +668,7 @@
       "targets": [
         {
           "datasource": "InfluxDB_Apex",
-          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_name\"] =~ /W$/)\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"Power\")",
+          "query": "import \"strings\"\n\nfrom(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_name\"] =~ /W$/)\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({ r with probe_name: strings.trimSuffix(v: r.probe_name, suffix: \"W\") }))\n  |> keep(columns: [\"_time\", \"_value\", \"probe_name\"])",
           "refId": "A"
         }
       ],
@@ -665,7 +679,7 @@
   "refresh": "30s",
   "schemaVersion": 38,
   "style": "dark",
-  "tags": ["apex", "reef"],
+  "tags": ["reef", "neptune-apex", "aquarium"],
   "templating": {
     "list": []
   },
@@ -675,8 +689,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Neptune Apex Overview",
-  "uid": "apex-overview",
+  "title": "Reef Monitor",
+  "uid": "reef-monitor",
   "version": 0,
   "weekStart": ""
 }

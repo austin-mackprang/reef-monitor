@@ -1,6 +1,6 @@
-# Neptune Apex TIG Stack Monitoring
+# Reef Monitor
 
-A complete turn-key monitoring solution for your Neptune Apex reef controller using **Telegraf**, **InfluxDB**, and **Grafana** (TIG Stack). Deploy with Docker in minutes!
+A beautiful, turn-key monitoring solution for your Neptune Apex reef controller using the **TIG Stack** (Telegraf, InfluxDB, and Grafana). Deploy with Docker in minutes and monitor your reef aquarium with stunning visualizations!
 
 ## Features
 
@@ -82,10 +82,10 @@ You'll be prompted to change the password on first login (optional but recommend
 
 ### 5. View Your Dashboard
 
-The "Neptune Apex Overview" dashboard is automatically provisioned and ready to use:
+The "Reef Monitor" dashboard is automatically provisioned and ready to use:
 1. Click on the menu (hamburger icon)
 2. Navigate to **Dashboards**
-3. Select **Neptune Apex Overview**
+3. Select **Reef Monitor**
 
 You should see data within 60 seconds of startup!
 
@@ -113,20 +113,22 @@ Neptune Apex Controller (192.168.1.59)
 ## Project Structure
 
 ```
-apex/
+reef-monitor/
 ├── README.md                     # This file
 ├── docker/
 │   ├── .env                      # Configuration (EDIT THIS!)
 │   ├── .env.example              # Example configuration
 │   ├── docker-compose.yml        # Service orchestration
 │   ├── telegraf/
-│   │   └── telegraf.conf         # Data collection config
+│   │   ├── telegraf.conf         # Data collection config
+│   │   ├── apex_xml_parser.py    # XML parser script
+│   │   └── Dockerfile            # Custom Telegraf image
 │   └── grafana/
 │       ├── datasources/
 │       │   └── influxdb.yml      # InfluxDB connection
 │       └── dashboards/
 │           ├── dashboard.yml     # Dashboard provisioning
-│           └── apex-overview.json # Main dashboard
+│           └── reef-overview.json # Reef Monitor dashboard
 └── apex_sample_data/
     ├── README.md                 # Sample data info
     └── status.xml                # Example XML from Apex
@@ -182,10 +184,10 @@ docker-compose ps
 
 Expected output:
 ```
-NAME              STATUS          PORTS
-apex-grafana      Up 2 minutes    0.0.0.0:3000->3000/tcp
-apex-influxdb     Up 2 minutes    0.0.0.0:8086->8086/tcp
-apex-telegraf     Up 2 minutes
+NAME                     STATUS          PORTS
+reef-monitor-grafana     Up 2 minutes    0.0.0.0:3000->3000/tcp
+reef-monitor-influxdb    Up 2 minutes    0.0.0.0:8086->8086/tcp
+reef-monitor-telegraf    Up 2 minutes
 ```
 
 ### Restart Services
@@ -310,7 +312,7 @@ from(bucket: "apex")
 2. Modify queries, visualizations, and thresholds
 3. Save the dashboard
 4. Export JSON: Panel menu → Share → Export → Save to file
-5. Replace `docker/grafana/dashboards/apex-overview.json`
+5. Replace `docker/grafana/dashboards/reef-overview.json`
 
 ### Change Data Collection Interval
 
@@ -338,8 +340,8 @@ To automatically delete old data:
 
 ```bash
 # Backup InfluxDB data
-docker exec apex-influxdb influx backup /tmp/backup -t my-super-secret-auth-token
-docker cp apex-influxdb:/tmp/backup ./backup-$(date +%Y%m%d)
+docker exec reef-monitor-influxdb influx backup /tmp/backup -t my-super-secret-auth-token
+docker cp reef-monitor-influxdb:/tmp/backup ./backup-$(date +%Y%m%d)
 
 # Backup Grafana dashboards (already in git)
 # Just commit your changes to the repository
