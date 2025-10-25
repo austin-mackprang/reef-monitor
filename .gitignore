@@ -4,7 +4,7 @@
 **/.DS_Store
 
 # Environment variables
-.env
+docker/.env
 
 # Docker volumes
 docker/influxdb/data/

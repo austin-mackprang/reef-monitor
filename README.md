@@ -40,14 +40,21 @@ cd apex
 
 ### 2. Configure Your Apex IP Address
 
-Edit the `.env` file and update your Apex controller's IP address:
+Edit the `docker/.env` file and update your Apex controller's IP address:
 
+```bash
+cd docker
+# Edit .env file with your favorite text editor
+# Update APEX_IP and APEX_ENDPOINT to match your Apex controller
+```
+
+Example:
 ```bash
 APEX_IP=192.168.1.59
 APEX_ENDPOINT=http://192.168.1.59/cgi-bin/status.xml
 ```
 
-**Note:** The `.env` file is already created with default values. Simply update the IP address to match your Apex controller.
+**Note:** The `.env` file is already created in the `docker/` directory with default values. Simply update the IP address to match your Apex controller.
 
 ### 3. Start the Stack
 
@@ -107,10 +114,10 @@ Neptune Apex Controller (192.168.1.59)
 
 ```
 apex/
-├── .env                          # Configuration (EDIT THIS!)
-├── .env.example                  # Example configuration
 ├── README.md                     # This file
 ├── docker/
+│   ├── .env                      # Configuration (EDIT THIS!)
+│   ├── .env.example              # Example configuration
 │   ├── docker-compose.yml        # Service orchestration
 │   ├── telegraf/
 │   │   └── telegraf.conf         # Data collection config
@@ -127,7 +134,7 @@ apex/
 
 ## Configuration
 
-All configuration is managed through the `.env` file:
+All configuration is managed through the `docker/.env` file:
 
 ### Apex Settings
 ```bash
@@ -210,7 +217,7 @@ docker-compose down -v
 
 ### Update Configuration
 
-After editing `.env`:
+After editing `docker/.env`:
 
 ```bash
 cd docker
@@ -249,7 +256,7 @@ docker-compose restart grafana
 
 ### Cannot Access Apex Controller
 
-1. **Check IP address** in `.env` matches your Apex
+1. **Check IP address** in `docker/.env` matches your Apex
 2. **Test connectivity:**
    ```bash
    ping 192.168.1.59
@@ -283,7 +290,7 @@ docker-compose restart grafana
 ### Access InfluxDB Directly
 
 1. Navigate to `http://localhost:8086`
-2. Login credentials (from `.env`):
+2. Login credentials (from `docker/.env`):
    - Username: `admin`
    - Password: `adminpassword123`
 3. Organization: `reef`
@@ -307,7 +314,7 @@ from(bucket: "apex")
 
 ### Change Data Collection Interval
 
-Edit `.env`:
+Edit `docker/.env`:
 ```bash
 COLLECTION_INTERVAL=30  # Collect every 30 seconds
 ```
@@ -342,7 +349,7 @@ docker cp apex-influxdb:/tmp/backup ./backup-$(date +%Y%m%d)
 
 **For Production Use:**
 
-1. **Change Default Passwords** in `.env`:
+1. **Change Default Passwords** in `docker/.env`:
    - InfluxDB password
    - InfluxDB token
    - Grafana password
@@ -354,10 +361,10 @@ docker cp apex-influxdb:/tmp/backup ./backup-$(date +%Y%m%d)
 
 3. **Secure the `.env` file:**
    ```bash
-   chmod 600 .env
+   chmod 600 docker/.env
    ```
 
-4. **Never commit `.env` to git** - It's already in `.gitignore`
+4. **Never commit `docker/.env` to git** - It's already in `.gitignore`
 
 ## Data Structure
 
