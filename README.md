@@ -91,24 +91,57 @@ You should see data within 60 seconds of startup!
 
 ## Architecture
 
+```mermaid
+graph TB
+    subgraph "Neptune Apex Controller"
+        A[status.xml API<br/>192.168.1.59:80]
+    end
+
+    subgraph "reef-monitor Docker Stack"
+        B[Telegraf Container<br/>reef-monitor-telegraf]
+        C[Python XML Parser<br/>apex_xml_parser.py]
+        D[InfluxDB v2<br/>reef-monitor-influxdb<br/>Port 8086]
+        E[Grafana<br/>reef-monitor-grafana<br/>Port 3000]
+
+        B -->|executes every 60s| C
+        C -->|fetches XML| A
+        C -->|parses & outputs<br/>Line Protocol| B
+        B -->|writes metrics| D
+        D -->|Flux queries| E
+    end
+
+    subgraph "User Access"
+        F[Web Browser<br/>localhost:3000]
+    end
+
+    E -->|serves dashboards| F
+
+    style A fill:#5390d9,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#6930c3,stroke:#333,stroke-width:2px,color:#fff
+    style C fill:#7400b8,stroke:#333,stroke-width:2px,color:#fff
+    style D fill:#48bfe3,stroke:#333,stroke-width:2px,color:#fff
+    style E fill:#56cfe1,stroke:#333,stroke-width:2px,color:#fff
+    style F fill:#80ffdb,stroke:#333,stroke-width:2px,color:#000
 ```
-Neptune Apex Controller (192.168.1.59)
-          |
-          | HTTP GET /cgi-bin/status.xml (every 60s)
-          v
-     Telegraf (XML Parser)
-          |
-          | InfluxDB Line Protocol
-          v
-     InfluxDB (Time-Series Database)
-          |
-          | Flux Queries
-          v
-     Grafana (Visualization)
-          |
-          v
-   Your Browser (localhost:3000)
-```
+
+### Data Flow
+
+1. **Neptune Apex** exposes real-time reef controller data via XML endpoint
+2. **Python Parser** fetches and parses XML data every 60 seconds
+3. **Telegraf** executes the parser and collects metrics in InfluxDB Line Protocol format
+4. **InfluxDB** stores time-series data with full tag support (probe names, types, etc.)
+5. **Grafana** queries InfluxDB using Flux and renders beautiful visualizations
+6. **Your Browser** accesses the Grafana dashboard at http://localhost:3000
+
+### Components
+
+| Component | Purpose | Technology |
+|-----------|---------|------------|
+| **Apex Controller** | Data source - reef monitoring hardware | Neptune Systems Apex |
+| **XML Parser** | Fetch & parse status.xml into metrics | Python 3 (ElementTree, urllib) |
+| **Telegraf** | Data collection agent | Telegraf 1.28 (exec plugin) |
+| **InfluxDB** | Time-series database | InfluxDB v2.7 |
+| **Grafana** | Visualization platform | Grafana 10.2.0 |
 
 ## Project Structure
 

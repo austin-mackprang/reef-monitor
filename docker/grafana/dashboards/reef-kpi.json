@@ -1,0 +1,671 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "#80ffdb",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": "InfluxDB_Apex",
+      "description": "Ideal: 76-80°F (Must be kept stable)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "displayName": "Temperature",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 76
+              },
+              {
+                "color": "red",
+                "value": 80.1
+              }
+            ]
+          },
+          "unit": "fahrenheit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 0,
+        "y": 11
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "text": {
+          "titleSize": 18,
+          "valueSize": 48
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": "InfluxDB_Apex",
+          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"Temp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Temperature",
+      "type": "stat"
+    },
+    {
+      "datasource": "InfluxDB_Apex",
+      "description": "Ideal: 8.1-8.3 (Preferred) / 7.8-8.4 (Tolerable)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "displayName": "pH",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 7.8
+              },
+              {
+                "color": "green",
+                "value": 8.1
+              },
+              {
+                "color": "yellow",
+                "value": 8.31
+              },
+              {
+                "color": "red",
+                "value": 8.41
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 4,
+        "y": 11
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "text": {
+          "titleSize": 18,
+          "valueSize": 48
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": "InfluxDB_Apex",
+          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"pH\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "pH",
+      "type": "stat"
+    },
+    {
+      "datasource": "InfluxDB_Apex",
+      "description": "Ideal: 250-400 mV",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "displayName": "ORP",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 250
+              },
+              {
+                "color": "red",
+                "value": 401
+              }
+            ]
+          },
+          "unit": "mvolt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 8,
+        "y": 11
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "text": {
+          "titleSize": 18,
+          "valueSize": 48
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": "InfluxDB_Apex",
+          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"ORP\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "ORP",
+      "type": "stat"
+    },
+    {
+      "datasource": "InfluxDB_Apex",
+      "description": "Ideal: 32-35 ppt (1.023-1.026 SG)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1,
+          "displayName": "Salinity",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 32
+              },
+              {
+                "color": "red",
+                "value": 35.1
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 12,
+        "y": 11
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "text": {
+          "titleSize": 18,
+          "valueSize": 48
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": "InfluxDB_Apex",
+          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"Cond\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Salinity (ppt)",
+      "type": "stat"
+    },
+    {
+      "datasource": "InfluxDB_Apex",
+      "description": "Ideal: 8-12 dKH (2.86-4.29 meq/L)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "displayName": "Alkalinity",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 8
+              },
+              {
+                "color": "red",
+                "value": 12.1
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 16,
+        "y": 11
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "text": {
+          "titleSize": 18,
+          "valueSize": 48
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": "InfluxDB_Apex",
+          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"alk\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Alkalinity (dKH)",
+      "type": "stat"
+    },
+    {
+      "datasource": "InfluxDB_Apex",
+      "description": "Ideal: 380-450 ppm",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "displayName": "Calcium",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 380
+              },
+              {
+                "color": "red",
+                "value": 451
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 20,
+        "y": 11
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "text": {
+          "titleSize": 18,
+          "valueSize": 48
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": "InfluxDB_Apex",
+          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"ca\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Calcium (ppm)",
+      "type": "stat"
+    },
+    {
+      "datasource": "InfluxDB_Apex",
+      "description": "Ideal: 1200-1400 ppm",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "displayName": "Magnesium",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1200
+              },
+              {
+                "color": "red",
+                "value": 1401
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 0,
+        "y": 17
+      },
+      "id": 7,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "text": {
+          "titleSize": 18,
+          "valueSize": 48
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": "InfluxDB_Apex",
+          "query": "from(bucket: \"apex\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"mg\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Magnesium (ppm)",
+      "type": "stat"
+    },
+    {
+      "datasource": "InfluxDB_Apex",
+      "description": "Status of key parameters at a glance",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "In Range": {
+                        "color": "green",
+                        "index": 0,
+                        "text": "✓ In Range"
+                      },
+                      "Low": {
+                        "color": "red",
+                        "index": 1,
+                        "text": "⚠ Low"
+                      },
+                      "High": {
+                        "color": "red",
+                        "index": 2,
+                        "text": "⚠ High"
+                      },
+                      "Caution": {
+                        "color": "yellow",
+                        "index": 3,
+                        "text": "⚠ Caution"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Current"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Ideal Range"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 150
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": "InfluxDB_Apex",
+          "query": "import \"strings\"\n\ntemp = from(bucket: \"apex\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"Temp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> last()\n  |> map(fn: (r) => ({ \n    Parameter: \"Temperature\",\n    Current: string(v: r._value) + \" °F\",\n    \"Ideal Range\": \"76-80 °F\",\n    Status: if r._value >= 76.0 and r._value <= 80.0 then \"In Range\" else if r._value < 76.0 then \"Low\" else \"High\"\n  }))\n\npH = from(bucket: \"apex\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"pH\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> last()\n  |> map(fn: (r) => ({ \n    Parameter: \"pH\",\n    Current: string(v: r._value),\n    \"Ideal Range\": \"8.1-8.3\",\n    Status: if r._value >= 8.1 and r._value <= 8.3 then \"In Range\" else if r._value >= 7.8 and r._value < 8.1 then \"Caution\" else if r._value > 8.3 and r._value <= 8.4 then \"Caution\" else if r._value < 7.8 then \"Low\" else \"High\"\n  }))\n\norp = from(bucket: \"apex\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"ORP\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> last()\n  |> map(fn: (r) => ({ \n    Parameter: \"ORP\",\n    Current: string(v: r._value) + \" mV\",\n    \"Ideal Range\": \"250-400 mV\",\n    Status: if r._value >= 250.0 and r._value <= 400.0 then \"In Range\" else if r._value < 250.0 then \"Low\" else \"High\"\n  }))\n\nsal = from(bucket: \"apex\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"Cond\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> last()\n  |> map(fn: (r) => ({ \n    Parameter: \"Salinity\",\n    Current: string(v: r._value) + \" ppt\",\n    \"Ideal Range\": \"32-35 ppt\",\n    Status: if r._value >= 32.0 and r._value <= 35.0 then \"In Range\" else if r._value < 32.0 then \"Low\" else \"High\"\n  }))\n\nalk = from(bucket: \"apex\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"alk\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> last()\n  |> map(fn: (r) => ({ \n    Parameter: \"Alkalinity\",\n    Current: string(v: r._value) + \" dKH\",\n    \"Ideal Range\": \"8-12 dKH\",\n    Status: if r._value >= 8.0 and r._value <= 12.0 then \"In Range\" else if r._value < 8.0 then \"Low\" else \"High\"\n  }))\n\nca = from(bucket: \"apex\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"ca\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> last()\n  |> map(fn: (r) => ({ \n    Parameter: \"Calcium\",\n    Current: string(v: r._value) + \" ppm\",\n    \"Ideal Range\": \"380-450 ppm\",\n    Status: if r._value >= 380.0 and r._value <= 450.0 then \"In Range\" else if r._value < 380.0 then \"Low\" else \"High\"\n  }))\n\nmg = from(bucket: \"apex\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"apex_probe\")\n  |> filter(fn: (r) => r[\"probe_type\"] == \"mg\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> last()\n  |> map(fn: (r) => ({ \n    Parameter: \"Magnesium\",\n    Current: string(v: r._value) + \" ppm\",\n    \"Ideal Range\": \"1200-1400 ppm\",\n    Status: if r._value >= 1200.0 and r._value <= 1400.0 then \"In Range\" else if r._value < 1200.0 then \"Low\" else \"High\"\n  }))\n\nunion(tables: [temp, pH, orp, sal, alk, ca, mg])\n  |> sort(columns: [\"Parameter\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "Parameter Status Summary",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "_start": true,
+              "_stop": true,
+              "_time": true,
+              "result": true,
+              "table": true
+            },
+            "indexByName": {},
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["reef", "neptune-apex", "kpi", "aquarium"],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-5m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "30s",
+      "1m",
+      "5m"
+    ]
+  },
+  "timezone": "",
+  "title": "Reef KPI Dashboard",
+  "uid": "reef-kpi",
+  "version": 0
+}
