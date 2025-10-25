@@ -1,0 +1,1 @@
+This sample data is available at: http://your_apex_ip/cgi-bin/status.xml

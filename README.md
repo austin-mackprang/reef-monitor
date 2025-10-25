@@ -1,104 +1,163 @@
 # Neptune Apex TIG Stack Monitoring
 
-This setup provides a complete monitoring solution for your Neptune Apex reef controller using Telegraf, InfluxDB, and Grafana.
+A complete turn-key monitoring solution for your Neptune Apex reef controller using **Telegraf**, **InfluxDB**, and **Grafana** (TIG Stack). Deploy with Docker in minutes!
 
-## Prerequisites
+## Features
 
-- Docker Desktop for Mac (installed and running)
-- Neptune Apex controller accessible at `http://192.168.1.59/cgi-bin/datalog.json`
-
-## Quick Start
-
-1. **Run the setup script:**
-   ```bash
-   chmod +x setup.sh
-   ./setup.sh
-   ```
-
-2. **Start the stack:**
-   ```bash
-   docker-compose up -d
-   ```
-
-3. **Access Grafana:**
-   - URL: http://localhost:3000
-   - Username: `admin`
-   - Password: `admin`
-   - You'll be prompted to change the password on first login
-
-4. **View your dashboard:**
-   - The "Neptune Apex Overview" dashboard should be automatically provisioned
-   - You'll see graphs for Temperature, pH, Power Consumption, and Salinity
+- Real-time monitoring of all Apex probes and sensors
+- Beautiful Grafana dashboards with 8 pre-configured panels
+- Automated data collection every 60 seconds
+- Historical data storage and visualization
+- Easy configuration via environment variables
+- Persistent data storage across container restarts
 
 ## What Gets Monitored
 
-The system monitors all data from your Apex controller including:
-
-- **Temperature** (Tmp)
-- **pH levels** (pH)
+- **Temperature** (Fahrenheit)
+- **pH levels** with optimal range display
 - **ORP** (Oxidation-Reduction Potential)
-- **Salinity** (Salt/Cond)
-- **Water Level** (Level)
-- **Current Draw** (Amps) for all outlets
-- **Power Consumption** (Watts) for all outlets
-- **Voltage** readings
+- **Salinity/Conductivity** (PPT)
+- **Alkalinity** (dKH) - from Trident
+- **Calcium** (ppm) - from Trident
+- **Magnesium** (ppm) - from Trident
+- **Power Consumption** by outlet (Watts)
+- **Outlet States** (ON/OFF/AUTO)
+
+## Prerequisites
+
+- Docker Desktop (Windows/Mac) or Docker Engine + Docker Compose (Linux)
+- Neptune Apex controller accessible on your network
+- Network connectivity between your Docker host and Apex controller
+
+## Quick Start
+
+### 1. Clone or Download This Repository
+
+```bash
+git clone <your-repo-url>
+cd apex
+```
+
+### 2. Configure Your Apex IP Address
+
+Edit the `.env` file and update your Apex controller's IP address:
+
+```bash
+APEX_IP=192.168.1.59
+APEX_ENDPOINT=http://192.168.1.59/cgi-bin/status.xml
+```
+
+**Note:** The `.env` file is already created with default values. Simply update the IP address to match your Apex controller.
+
+### 3. Start the Stack
+
+Navigate to the docker directory and start all services:
+
+```bash
+cd docker
+docker-compose up -d
+```
+
+This will:
+- Pull the necessary Docker images (first time only)
+- Create persistent volumes for data storage
+- Start InfluxDB, Telegraf, and Grafana containers
+- Begin collecting data from your Apex controller
+
+### 4. Access Grafana
+
+Open your browser and navigate to:
+- **URL:** `http://localhost:3000`
+- **Username:** `admin`
+- **Password:** `admin`
+
+You'll be prompted to change the password on first login (optional but recommended).
+
+### 5. View Your Dashboard
+
+The "Neptune Apex Overview" dashboard is automatically provisioned and ready to use:
+1. Click on the menu (hamburger icon)
+2. Navigate to **Dashboards**
+3. Select **Neptune Apex Overview**
+
+You should see data within 60 seconds of startup!
 
 ## Architecture
 
-- **Telegraf**: Scrapes data from Apex every 60 seconds
-- **InfluxDB**: Time-series database storing all metrics
-- **Grafana**: Visualization and alerting dashboard
-
-## File Structure
-
 ```
-.
-├── docker-compose.yml          # Docker stack definition
-├── telegraf.conf              # Telegraf configuration
-├── apex-parser.py             # JSON parser (optional)
-├── setup.sh                   # Setup automation script
-├── grafana-provisioning/      # Auto-provision Grafana
-│   ├── datasources/
-│   │   └── influxdb.yml
-│   └── dashboards/
-│       ├── dashboard.yml
-│       └── apex-overview.json
-└── README.md                  # This file
+Neptune Apex Controller (192.168.1.59)
+          |
+          | HTTP GET /cgi-bin/status.xml (every 60s)
+          v
+     Telegraf (XML Parser)
+          |
+          | InfluxDB Line Protocol
+          v
+     InfluxDB (Time-Series Database)
+          |
+          | Flux Queries
+          v
+     Grafana (Visualization)
+          |
+          v
+   Your Browser (localhost:3000)
 ```
 
-## Customization
+## Project Structure
 
-### Change Apex Controller IP
-
-Edit `telegraf.conf` and update the URL:
-```toml
-urls = ["http://YOUR_APEX_IP/cgi-bin/datalog.json"]
+```
+apex/
+├── .env                          # Configuration (EDIT THIS!)
+├── .env.example                  # Example configuration
+├── README.md                     # This file
+├── docker/
+│   ├── docker-compose.yml        # Service orchestration
+│   ├── telegraf/
+│   │   └── telegraf.conf         # Data collection config
+│   └── grafana/
+│       ├── datasources/
+│       │   └── influxdb.yml      # InfluxDB connection
+│       └── dashboards/
+│           ├── dashboard.yml     # Dashboard provisioning
+│           └── apex-overview.json # Main dashboard
+└── apex_sample_data/
+    ├── README.md                 # Sample data info
+    └── status.xml                # Example XML from Apex
 ```
 
-### Change Data Collection Interval
+## Configuration
 
-Edit `telegraf.conf` and modify:
-```toml
-interval = "60s"  # Change to desired interval
-```
+All configuration is managed through the `.env` file:
 
-### Add Custom Dashboards
-
-1. Create dashboards in Grafana UI
-2. Export as JSON
-3. Save to `grafana-provisioning/dashboards/`
-4. Restart Grafana: `docker-compose restart grafana`
-
-## Troubleshooting
-
-### Check if containers are running:
+### Apex Settings
 ```bash
-docker-compose ps
+APEX_IP=192.168.1.59                              # Your Apex IP address
+APEX_ENDPOINT=http://192.168.1.59/cgi-bin/status.xml
+COLLECTION_INTERVAL=60                            # Data collection interval (seconds)
 ```
 
-### View logs:
+### InfluxDB Settings
+```bash
+INFLUXDB_USERNAME=admin
+INFLUXDB_PASSWORD=adminpassword123                # Change for production!
+INFLUXDB_ORG=reef
+INFLUXDB_BUCKET=apex
+INFLUXDB_TOKEN=my-super-secret-auth-token         # Change for production!
+```
+
+### Grafana Settings
+```bash
+GRAFANA_ADMIN_USER=admin
+GRAFANA_ADMIN_PASSWORD=admin                      # Change for production!
+```
+
+## Common Operations
+
+### View Logs
+
 ```bash
 # All services
+cd docker
 docker-compose logs -f
 
 # Specific service
@@ -107,107 +166,239 @@ docker-compose logs -f influxdb
 docker-compose logs -f grafana
 ```
 
-### Test Apex connectivity:
+### Check Service Status
+
 ```bash
-curl http://192.168.1.59/cgi-bin/datalog.json
+cd docker
+docker-compose ps
 ```
 
-### Restart a service:
+Expected output:
+```
+NAME              STATUS          PORTS
+apex-grafana      Up 2 minutes    0.0.0.0:3000->3000/tcp
+apex-influxdb     Up 2 minutes    0.0.0.0:8086->8086/tcp
+apex-telegraf     Up 2 minutes
+```
+
+### Restart Services
+
 ```bash
+cd docker
+
+# Restart all services
+docker-compose restart
+
+# Restart specific service
 docker-compose restart telegraf
 ```
 
-### Reset everything:
+### Stop the Stack
+
 ```bash
-docker-compose down -v  # WARNING: This deletes all data!
+cd docker
+
+# Stop (keeps data)
+docker-compose stop
+
+# Stop and remove containers (keeps data volumes)
+docker-compose down
+
+# Remove everything including data (CAREFUL!)
+docker-compose down -v
+```
+
+### Update Configuration
+
+After editing `.env`:
+
+```bash
+cd docker
+docker-compose down
 docker-compose up -d
 ```
 
-## InfluxDB Direct Access
+## Troubleshooting
 
-If you want to query data directly:
+### No Data Appears in Grafana
 
-1. Access InfluxDB UI: http://localhost:8086
-2. Login with:
+1. **Wait 60 seconds** - Data collection happens every minute
+2. **Check Telegraf logs:**
+   ```bash
+   cd docker
+   docker-compose logs telegraf
+   ```
+3. **Verify Apex is reachable:**
+   ```bash
+   curl http://192.168.1.59/cgi-bin/status.xml
+   ```
+4. **Check time range** - In Grafana, try expanding the time range to "Last 6 hours"
+
+### "Failed to Fetch" Error in Grafana
+
+This usually means:
+- InfluxDB isn't running or ready yet
+- Datasource configuration is incorrect
+- Wait 30 seconds for InfluxDB to fully initialize
+
+**Solution:**
+```bash
+cd docker
+docker-compose restart grafana
+```
+
+### Cannot Access Apex Controller
+
+1. **Check IP address** in `.env` matches your Apex
+2. **Test connectivity:**
+   ```bash
+   ping 192.168.1.59
+   curl http://192.168.1.59/cgi-bin/status.xml
+   ```
+3. **Firewall:** Ensure no firewall is blocking access
+4. **Network:** Docker and Apex must be on accessible networks
+
+### Telegraf Shows "Connection Refused"
+
+- InfluxDB may not be ready yet
+- Wait 30 seconds and check logs again
+- Try restarting: `docker-compose restart telegraf`
+
+### Dashboard Shows "No Data"
+
+1. **Check InfluxDB has data:**
+   - Go to `http://localhost:8086`
+   - Login: `admin` / `adminpassword123`
+   - Navigate to **Data Explorer**
+   - Select bucket: `apex`
+   - Check for measurements: `apex_probe`, `apex_outlet`, `apex_system`
+
+2. **Verify Telegraf is collecting:**
+   ```bash
+   docker-compose logs telegraf | grep "apex_probe"
+   ```
+
+## Advanced
+
+### Access InfluxDB Directly
+
+1. Navigate to `http://localhost:8086`
+2. Login credentials (from `.env`):
    - Username: `admin`
    - Password: `adminpassword123`
 3. Organization: `reef`
 4. Bucket: `apex`
 
-Example Flux query:
+Example Flux query to verify data:
 ```flux
 from(bucket: "apex")
   |> range(start: -1h)
-  |> filter(fn: (r) => r["_measurement"] == "apex")
-  |> filter(fn: (r) => r["type"] == "Temp")
+  |> filter(fn: (r) => r["_measurement"] == "apex_probe")
+  |> filter(fn: (r) => r["probe_type"] == "Temp")
 ```
 
-## Security Notes
+### Customize the Dashboard
 
-⚠️ **Important for Production Use:**
+1. In Grafana, edit panels by clicking the panel title → Edit
+2. Modify queries, visualizations, and thresholds
+3. Save the dashboard
+4. Export JSON: Panel menu → Share → Export → Save to file
+5. Replace `docker/grafana/dashboards/apex-overview.json`
 
-1. **Change default passwords** in `docker-compose.yml`:
-   - InfluxDB admin password
+### Change Data Collection Interval
+
+Edit `.env`:
+```bash
+COLLECTION_INTERVAL=30  # Collect every 30 seconds
+```
+
+Then restart:
+```bash
+cd docker
+docker-compose restart telegraf
+```
+
+### Setup Data Retention
+
+To automatically delete old data:
+
+1. Access InfluxDB at `http://localhost:8086`
+2. Go to **Settings** → **Buckets**
+3. Edit the `apex` bucket
+4. Set retention period (e.g., 30 days, 90 days, etc.)
+
+### Backup Your Data
+
+```bash
+# Backup InfluxDB data
+docker exec apex-influxdb influx backup /tmp/backup -t my-super-secret-auth-token
+docker cp apex-influxdb:/tmp/backup ./backup-$(date +%Y%m%d)
+
+# Backup Grafana dashboards (already in git)
+# Just commit your changes to the repository
+```
+
+## Security Considerations
+
+**For Production Use:**
+
+1. **Change Default Passwords** in `.env`:
+   - InfluxDB password
    - InfluxDB token
-   - Grafana admin password
+   - Grafana password
 
-2. **Secure network access**:
-   - Don't expose ports to the internet
+2. **Don't Expose Ports** to the internet:
    - Use a reverse proxy with SSL/TLS
-   - Enable Grafana authentication
+   - Implement authentication
+   - Consider VPN access
 
-3. **Backup your data**:
+3. **Secure the `.env` file:**
    ```bash
-   # Backup InfluxDB
-   docker exec apex-influxdb influx backup /tmp/backup
-   docker cp apex-influxdb:/tmp/backup ./backup
+   chmod 600 .env
    ```
 
-## Advanced Configuration
+4. **Never commit `.env` to git** - It's already in `.gitignore`
 
-### Email Alerts in Grafana
+## Data Structure
 
-1. Go to Grafana → Alerting → Contact points
-2. Add your email configuration
-3. Create alert rules on dashboard panels
+### Measurements Collected
 
-### Retention Policies
+**apex_probe:**
+- Fields: `value` (float)
+- Tags: `probe_name`, `probe_type`
+- Examples: Temperature (Temp), pH, ORP, Salinity (Cond), Alkalinity (alk), Calcium (ca), Magnesium (mg)
 
-Edit in InfluxDB UI or via CLI to automatically delete old data:
-```bash
-docker exec -it apex-influxdb influx bucket update \
-  --name apex \
-  --retention 30d \
-  --org reef
-```
+**apex_outlet:**
+- Fields: `output_id` (int), `state` (string)
+- Tags: `outlet_name`, `device_id`
+- Examples: Return, Heater, Lights, etc.
 
-## Stopping the Stack
+**apex_system:**
+- Fields: `timezone` (float)
+- Tags: `hostname`, `software`, `hardware`, `serial`
 
-```bash
-# Stop but keep data
-docker-compose stop
-
-# Stop and remove containers (data persists in volumes)
-docker-compose down
-
-# Stop and remove everything including data
-docker-compose down -v
-```
-
-## Getting Help
-
-Common issues:
-
-1. **"Connection refused" errors**: Check that Apex is accessible from your Mac
-2. **No data in Grafana**: Wait 60 seconds for first scrape, check Telegraf logs
-3. **Permission denied**: Make sure setup.sh is executable: `chmod +x setup.sh`
-
-## Resources
+## Support & Resources
 
 - [Telegraf Documentation](https://docs.influxdata.com/telegraf/)
-- [InfluxDB Documentation](https://docs.influxdata.com/influxdb/)
+- [InfluxDB Documentation](https://docs.influxdata.com/influxdb/v2/)
 - [Grafana Documentation](https://grafana.com/docs/)
-- [Neptune Apex API](https://www.neptunesystems.com/)
+- [Neptune Apex](https://www.neptunesystems.com/)
+
+## What's Different From Previous Version
+
+This version includes several improvements:
+- Switched from `datalog.json` to `status.xml` endpoint (more reliable)
+- Fixed broken folder structure paths
+- Added proper environment variable support via `.env`
+- Improved Grafana dashboard with 8 panels (was 4)
+- Added Trident data support (Alkalinity, Calcium, Magnesium)
+- Added power consumption monitoring by outlet
+- Removed unnecessary files (JSON parser, backup configs)
+- Cleaner, more maintainable structure
+
+## Contributing
+
+Found a bug or want to add a feature? Feel free to submit a pull request!
 
 ## License
 

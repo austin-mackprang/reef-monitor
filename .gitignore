@@ -2,3 +2,10 @@
 # Ignore .DS_Store files created by Finder
 .DS_Store
 **/.DS_Store
+
+# Environment variables
+.env
+
+# Docker volumes
+docker/influxdb/data/
+docker/grafana/data/
