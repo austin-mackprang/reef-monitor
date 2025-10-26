@@ -34,8 +34,8 @@ A beautiful, turn-key monitoring solution for your Neptune Apex reef controller 
 ### 1. Clone or Download This Repository
 
 ```bash
-git clone <your-repo-url>
-cd apex
+git clone https://github.com/austin-mac/reef-monitor.git
+cd reef-monitor
 ```
 
 ### 2. Configure Your Apex IP Address
@@ -360,7 +360,6 @@ docker exec reef-monitor-influxdb influx backup /tmp/backup -t my-super-secret-a
 docker cp reef-monitor-influxdb:/tmp/backup ./backup-$(date +%Y%m%d)
 
 # Backup Grafana dashboards (already in git)
-# Just commit your changes to the repository
 ```
 
 ## Security Considerations
