@@ -92,33 +92,16 @@ You should see data within 60 seconds of startup!
 ## Architecture
 
 ```mermaid
-graph TB
-    subgraph "Neptune Apex Controller"
-        A[status.xml API<br/>192.168.1.59:80]
-    end
-
-    subgraph "reef-monitor Docker Stack"
-        B[Telegraf Container<br/>reef-monitor-telegraf]
-        C[Python XML Parser<br/>apex_xml_parser.py]
-        D[InfluxDB v2<br/>reef-monitor-influxdb<br/>Port 8086]
-        E[Grafana<br/>reef-monitor-grafana<br/>Port 3000]
-
-        B -->|executes every 60s| C
-        C -->|fetches XML| A
-        C -->|parses & outputs<br/>Line Protocol| B
-        B -->|writes metrics| D
-        D -->|Flux queries| E
-    end
-
-    subgraph "User Access"
-        F[Web Browser<br/>localhost:3000]
-    end
-
-    E -->|serves dashboards| F
+graph LR
+    A[Neptune Apex<br/>Controller<br/>192.168.1.59] -->|HTTP GET<br/>status.xml<br/>every 60s| B[Python Parser<br/>apex_xml_parser.py]
+    B -->|InfluxDB<br/>Line Protocol| C[Telegraf<br/>reef-monitor-telegraf]
+    C -->|Write<br/>Metrics| D[(InfluxDB v2<br/>reef-monitor-influxdb<br/>:8086)]
+    D -->|Flux<br/>Queries| E[Grafana<br/>reef-monitor-grafana<br/>:3000]
+    E -->|Dashboards| F[Your Browser<br/>localhost:3000]
 
     style A fill:#5390d9,stroke:#333,stroke-width:2px,color:#fff
-    style B fill:#6930c3,stroke:#333,stroke-width:2px,color:#fff
-    style C fill:#7400b8,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#7400b8,stroke:#333,stroke-width:2px,color:#fff
+    style C fill:#6930c3,stroke:#333,stroke-width:2px,color:#fff
     style D fill:#48bfe3,stroke:#333,stroke-width:2px,color:#fff
     style E fill:#56cfe1,stroke:#333,stroke-width:2px,color:#fff
     style F fill:#80ffdb,stroke:#333,stroke-width:2px,color:#000
