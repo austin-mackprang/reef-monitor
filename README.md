@@ -24,6 +24,16 @@ A beautiful, turn-key monitoring solution for your Neptune Apex reef controller 
 - **Power Consumption** by outlet (Watts)
 - **Outlet States** (ON/OFF/AUTO)
 
+## Screenshots
+
+### Main Monitoring Dashboard
+![Reef Monitor Dashboard](images/Monitor-Dashboard.png)
+*Real-time monitoring of all reef parameters with 9 customizable panels in a 3x3 grid layout*
+
+### KPI Dashboard
+![KPI Dashboard](images/KPI-Dashboard.png)
+*Quick overview of key performance indicators and system health*
+
 ## Prerequisites
 
 - Docker Desktop (Windows/Mac) or Docker Engine + Docker Compose (Linux)
@@ -41,21 +51,27 @@ cd reef-monitor
 
 ### 2. Configure Your Apex IP Address
 
-Edit the `docker/.env` file and update your Apex controller's IP address:
+Create your configuration file from the example template:
 
 ```bash
 cd docker
-# Edit .env file with your favorite text editor
-# Update APEX_IP and APEX_ENDPOINT to match your Apex controller
+cp .env.example .env
 ```
 
-Example:
+Then edit the `.env` file and update your Apex controller's IP address:
+
+```bash
+# Edit with your favorite text editor (nano, vim, VS Code, etc.)
+nano .env
+```
+
+Update these lines to match your Apex controller:
 ```bash
 APEX_IP=192.168.1.59
 APEX_ENDPOINT=http://192.168.1.59/cgi-bin/status.xml
 ```
 
-**Note:** The `.env` file is already created in the `docker/` directory with default values. Simply update the IP address to match your Apex controller.
+Save and close the file.
 
 ### 3. Start the Stack
 
@@ -94,15 +110,17 @@ You should see data within 60 seconds of startup!
 
 ```mermaid
 graph LR
-    A[Neptune Apex<br/>Controller<br/>192.168.1.59] -->|HTTP GET<br/>status.xml<br/>every 60s| B[Python Parser<br/>apex_xml_parser.py]
-    B -->|InfluxDB<br/>Line Protocol| C[Telegraf<br/>reef-monitor-telegraf]
-    C -->|Write<br/>Metrics| D[(InfluxDB v2<br/>reef-monitor-influxdb<br/>:8086)]
+    A[Neptune Apex<br/>Controller<br/>192.168.1.59] -->|Exposes<br/>status.xml| B[Telegraf<br/>reef-monitor-telegraf]
+    B -->|Executes every 60s| C[Python Parser<br/>apex_xml_parser.py]
+    C -->|HTTP GET<br/>status.xml| A
+    C -->|InfluxDB<br/>Line Protocol| B
+    B -->|Write<br/>Metrics| D[(InfluxDB v2<br/>reef-monitor-influxdb<br/>:8086)]
     D -->|Flux<br/>Queries| E[Grafana<br/>reef-monitor-grafana<br/>:3000]
     E -->|Dashboards| F[Your Browser<br/>localhost:3000]
 
     style A fill:#5390d9,stroke:#333,stroke-width:2px,color:#fff
-    style B fill:#7400b8,stroke:#333,stroke-width:2px,color:#fff
-    style C fill:#6930c3,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#6930c3,stroke:#333,stroke-width:2px,color:#fff
+    style C fill:#7400b8,stroke:#333,stroke-width:2px,color:#fff
     style D fill:#48bfe3,stroke:#333,stroke-width:2px,color:#fff
     style E fill:#56cfe1,stroke:#333,stroke-width:2px,color:#fff
     style F fill:#80ffdb,stroke:#333,stroke-width:2px,color:#000
@@ -110,12 +128,14 @@ graph LR
 
 ### Data Flow
 
-1. **Neptune Apex** exposes real-time reef controller data via XML endpoint
-2. **Python Parser** fetches and parses XML data every 60 seconds
-3. **Telegraf** executes the parser and collects metrics in InfluxDB Line Protocol format
-4. **InfluxDB** stores time-series data with full tag support (probe names, types, etc.)
-5. **Grafana** queries InfluxDB using Flux and renders beautiful visualizations
-6. **Your Browser** accesses the Grafana dashboard at http://localhost:3000
+1. **Neptune Apex** exposes real-time reef controller data via XML endpoint (`status.xml`)
+2. **Telegraf** executes the Python parser every 60 seconds via the `exec` input plugin
+3. **Python Parser** fetches XML data from the Apex controller via HTTP GET
+4. **Python Parser** parses the XML and outputs metrics in InfluxDB Line Protocol format
+5. **Telegraf** receives the line protocol output and writes it to InfluxDB
+6. **InfluxDB** stores time-series data with full tag support (probe names, types, etc.)
+7. **Grafana** queries InfluxDB using Flux and renders beautiful visualizations
+8. **Your Browser** accesses the Grafana dashboard at http://localhost:3000
 
 ### Components
 
@@ -131,10 +151,11 @@ graph LR
 
 ```
 reef-monitor/
+├── LICENSE                       # GPL v3 License
 ├── README.md                     # This file
+├── .gitignore                    # Git ignore rules
 ├── docker/
-│   ├── .env                      # Configuration (EDIT THIS!)
-│   ├── .env.example              # Example configuration
+│   ├── .env.example              # Example configuration (copy to .env)
 │   ├── docker-compose.yml        # Service orchestration
 │   ├── telegraf/
 │   │   ├── telegraf.conf         # Data collection config
@@ -145,10 +166,13 @@ reef-monitor/
 │       │   └── influxdb.yml      # InfluxDB connection
 │       └── dashboards/
 │           ├── dashboard.yml     # Dashboard provisioning
-│           └── reef-overview.json # Reef Monitor dashboard
-└── apex_sample_data/
-    ├── README.md                 # Sample data info
-    └── status.xml                # Example XML from Apex
+│           └── reef-overview.json # Reef Monitor dashboard (9 panels)
+├── apex_sample_data/
+│   ├── README.md                 # Sample data info
+│   └── status.xml                # Example XML from Apex
+└── images/                       # Screenshot images
+    ├── Monitor-Dashboard.png     # Main monitoring dashboard
+    └── KPI-Dashboard.png         # KPI overview dashboard
 ```
 
 ## Configuration
@@ -439,7 +463,9 @@ Please ensure your code follows the existing style and includes appropriate docu
 
 ## License
 
-This project is licensed under the GNU GPL v3 License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+
+This means you are free to use, modify, and distribute this software, but any modifications or derivative works must also be released under GPL v3. This ensures that improvements to the project remain open source and benefit the community.
 
 ## Acknowledgments
 
