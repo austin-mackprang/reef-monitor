@@ -424,8 +424,28 @@ This version includes several improvements:
 
 ## Contributing
 
-Found a bug or want to add a feature? Feel free to submit a pull request!
+Contributions are welcome! Here's how you can help:
+
+1. **Report Issues**: Found a bug? Open an issue with details about the problem
+2. **Suggest Features**: Have an idea? Create an issue to discuss it
+3. **Submit Pull Requests**:
+   - Fork the repository
+   - Create a feature branch (`git checkout -b feature/amazing-feature`)
+   - Commit your changes (`git commit -m 'Add amazing feature'`)
+   - Push to the branch (`git push origin feature/amazing-feature`)
+   - Open a Pull Request
+
+Please ensure your code follows the existing style and includes appropriate documentation.
 
 ## License
 
-This configuration is provided as-is for personal use with Neptune Apex controllers.
+This project is licensed under the GNU GPL v3 License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Built for the [Neptune Systems Apex](https://www.neptunesystems.com/) aquarium controller
+- Uses the TIG Stack: [Telegraf](https://www.influxdata.com/time-series-platform/telegraf/), [InfluxDB](https://www.influxdata.com/), and [Grafana](https://grafana.com/)
+
+## Disclaimer
+
+This is an unofficial monitoring solution and is not affiliated with or endorsed by Neptune Systems. Use at your own risk.
