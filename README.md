@@ -5,7 +5,7 @@ A beautiful, turn-key monitoring solution for your Neptune Apex reef controller 
 ## Features
 
 - Real-time monitoring of all Apex probes and sensors
-- Beautiful Grafana dashboards with 8 pre-configured panels
+- Beautiful Grafana dashboards with 9 pre-configured panels
 - Automated data collection every 60 seconds
 - Historical data storage and visualization
 - Easy configuration via environment variables
@@ -17,6 +17,7 @@ A beautiful, turn-key monitoring solution for your Neptune Apex reef controller 
 - **pH levels** with optimal range display
 - **ORP** (Oxidation-Reduction Potential)
 - **Salinity/Conductivity** (PPT)
+- **Water Level** (inches)
 - **Alkalinity** (dKH) - from Trident
 - **Calcium** (ppm) - from Trident
 - **Magnesium** (ppm) - from Trident
@@ -390,7 +391,7 @@ docker cp reef-monitor-influxdb:/tmp/backup ./backup-$(date +%Y%m%d)
 **apex_probe:**
 - Fields: `value` (float)
 - Tags: `probe_name`, `probe_type`
-- Examples: Temperature (Temp), pH, ORP, Salinity (Cond), Alkalinity (alk), Calcium (ca), Magnesium (mg)
+- Examples: Temperature (Temp), pH, ORP, Salinity (Cond), Water Level (Level), Alkalinity (alk), Calcium (ca), Magnesium (mg)
 
 **apex_outlet:**
 - Fields: `output_id` (int), `state` (string)
@@ -414,8 +415,9 @@ This version includes several improvements:
 - Switched from `datalog.json` to `status.xml` endpoint (more reliable)
 - Fixed broken folder structure paths
 - Added proper environment variable support via `.env`
-- Improved Grafana dashboard with 8 panels (was 4)
+- Improved Grafana dashboard with 9 panels (was 4)
 - Added Trident data support (Alkalinity, Calcium, Magnesium)
+- Added water level monitoring
 - Added power consumption monitoring by outlet
 - Removed unnecessary files (JSON parser, backup configs)
 - Cleaner, more maintainable structure
