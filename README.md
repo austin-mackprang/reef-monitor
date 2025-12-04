@@ -45,7 +45,7 @@ A beautiful, turn-key monitoring solution for your Neptune Apex reef controller 
 ### 1. Clone or Download This Repository
 
 ```bash
-git clone https://github.com/austin-mac/reef-monitor.git
+git clone https://github.com/austin-mackprang/reef-monitor.git
 cd reef-monitor
 ```
 
